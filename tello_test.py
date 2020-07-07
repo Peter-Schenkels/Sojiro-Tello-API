@@ -21,6 +21,11 @@ drone.takeoff()
 drone.forward(50)
 drone.left(50)
 drone.rotate(90)
+drone.forward(50)
+drone.rotate(90)
+drone.forward(50)
+drone.rotate(90)
+drone.forward(50)
 
 
 

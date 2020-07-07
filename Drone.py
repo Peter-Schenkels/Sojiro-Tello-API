@@ -78,9 +78,13 @@ class Tello:
         self.client.sendto(command.encode('utf-8'), self.ADDRESS)
         if self.response_timeout():
             print(self.response)
+            if (self.response == None):
+                self.tello_send_command(command)
+                return
             self.response = None
         while (time.time() < self.TIME_OUT_COMMAND):
             None
+
 
 
     def connect(self):
@@ -91,8 +95,9 @@ class Tello:
 
 
     def move(self, direction, distance):
+        self.TIME_OUT_COMMAND = time.time() + (distance / self.get_speed())
         self.send_command(direction + ' ' + str(distance))
-        self.TIME_OUT_COMMAND = time.time() + (distance / self.get_speed())*2
+
 
     def get_speed(self):
         self.send_command("speed?")
@@ -105,7 +110,7 @@ class Tello:
         self.send_command("battery?")
 
     def takeoff(self):
-        self.TIME_OUT_COMMAND = time.time() + 10
+        self.TIME_OUT_COMMAND = time.time() + 3
         if(self.TELLO_ENABLED):
             self.send_command("takeoff")
         if(self.AIRSIM_ENABLED):
@@ -125,13 +130,13 @@ class Tello:
 
     def left(self, distance):
         if(self.TELLO_ENABLED):
-            self.move("left", distance)
+            self.move("left ", distance)
         if(self.AIRSIM_ENABLED):
             self.airsim_client.move_sideways(-distance / 100)
 
     def right(self, distance):
         if(self.TELLO_ENABLED):
-            self.move("right", distance)
+            self.move("right ", distance)
         if(self.AIRSIM_ENABLED):
             self.airsim_client.move_sideways(-distance / 100)
 
